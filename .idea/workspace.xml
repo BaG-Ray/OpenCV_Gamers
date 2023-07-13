@@ -6,100 +6,31 @@
   <component name="ChangeListManager">
     <list default="true" id="f2dd40d9-5f0a-4efc-870d-33f93e601e19" name="更改" comment="">
       <changelist_data name="BaG-Ray+" email="" />
-      <change afterPath="$PROJECT_DIR$/.idea/OpenCV_Gamers.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/git_toolbox_prj.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/AyakashiRanburu/AyakashiRanburu.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/AyakashiRanburu/tpl1678944706838.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/AyakashiRanburu/tpl1678947620600.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/AyakashiRanburu/tpl1678948248497.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Default_Scripts.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Initialize.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/LegenClover.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/LegenClover_Story.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/test.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1678169312132.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1678373001157.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1678373041102.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1678373069711.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1678373143174.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1678373157719.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1678373178239.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1678373216151.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1678423342375.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1678423373154.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1678423392677.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1678423410650.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1678423431169.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1678423443914.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1678423460234.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1678423478458.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1678427552672.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1678427569671.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1678427592463.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1678427605550.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1678427627270.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1678427652502.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1678427680928.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1678427694398.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1678427716754.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1678429454229.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1678429498709.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1678429619573.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1678429671844.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1678429751918.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1678431493179.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1678436934821.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1678439969025.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1678439990621.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1678439997347.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1678440024744.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1678440043013.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1678440059060.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1678518798688.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1679350197647.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1679351549769.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1679351604028.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1679357755696.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1684233873521.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1684233889436.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1684233899964.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1684233920975.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1684233955768.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1684233977140.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1684234002464.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1684234015710.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1684234059708.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1684234080980.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1684234419942.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1684234433684.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1684234493134.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1684234517140.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/tpl1684398881004.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MLTD/MLTD.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MLTD/log/log.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MLTD/test.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MLTD/tpl1678265858112.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ShinyColors/ShinyColors.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Default_Games_Script.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Default_Scripts.py" beforeDir="false" afterPath="$PROJECT_DIR$/Default_Scripts.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LegenClover/LegenClover.py" beforeDir="false" afterPath="$PROJECT_DIR$/LegenClover/LegenClover.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
+    <branch-grouping />
     <option name="PREVIOUS_COMMIT_AUTHORS">
       <list>
         <option value="BaG-Ray+" />
       </list>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-    <option name="SIGN_OFF_COMMIT" value="true" />
     <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="HighlightingSettingsPerFile">
@@ -119,7 +50,7 @@
     "dart.analysis.tool.window.visible": "false",
     "git-widget-placeholder": "master",
     "last_opened_file_path": "P:/Airtest/OpenCV_Gamers",
-    "settings.editor.selected.configurable": "settings.sync"
+    "settings.editor.selected.configurable": "advanced.settings"
   }
 }]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
@@ -155,7 +86,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="HEAD" />
+                        <option value="github/master" />
                       </list>
                     </value>
                   </entry>
@@ -168,8 +99,7 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="true" />
-    <option name="CHECK_CODE_CLEANUP_BEFORE_PROJECT_COMMIT" value="true" />
+    <option name="CHECK_NEW_TODO" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />

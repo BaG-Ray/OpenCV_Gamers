@@ -1,55 +1,46 @@
-# ----------------------------------引用部分（此部分所有脚本都一样，不需要修改）--------------------------------------------
 # -*- encoding=utf8 -*-
 # Version = 3.0
 # UpdateTime = 2023-07-13
 
-#################################2.4更新###################################
+# ----------------------------------2.4更新---------------------------------------------------
 # UpdateTime = 2023-05-18
 # 添加了CV2_Circle_Pic函数，此函数可以用来时间截图中的坐标标点
 
-#################################3.0更新###################################
+# ----------------------------------3.0更新---------------------------------------------------
 # UpdateTime = 2023-07-13
 # 本次在优化后，将之前的版本调整为类的模式，方便其他程序直接调用即可
 
 __author__ = "BaG-Ray+"
 
-import os
-import shutil
+# ----------------------------------引用部分（此部分所有脚本都一样，不需要修改）--------------------------------------------
 
 import cv2
 import pytesseract
+from PIL import Image
 from airtest.cli.parser import cli_setup
 from airtest.core.api import *
-from PIL import Image
 
 
 class OpencvGame:
-
-    if not cli_setup():
-        auto_setup(__file__, logdir=True,
-                   devices=["android://127.0.0.1:5037/aqwkhy95by4tgikb?cap_method=MINICAP&touch_method=MAXTOUCH&", ])
-
-    from poco.drivers.ios import iosPoco
-
-    poco = iosPoco()
-
     # ----------------------------------变量部分（需要改）--------------------------------------------
 
     # -----以下为基础部分--------
 
-    Log_Dir = ''
+    Log_Dir = '../log'
     Game_Name = ""
-    Game_Process = 0
+    Check_Game_Mode_RGB_Coordinate = []
 
-    # ----以下为图片--------------
+    def __init__(self, Game_Name):
+        self.Game_Name = Game_Name
 
-    # ----以下为坐标--------------
+        print(os.getcwd())
 
-    # ------RGB颜色判定------------
+        if not cli_setup():
+            auto_setup(__file__, logdir=True,
+                       devices=[
+                           "android://127.0.0.1:5037/aqwkhy95by4tgikb?cap_method=MINICAP&touch_method=MAXTOUCH&", ])
 
-    Check_Game_Mode_RGB_Coordinate = ()
-
-    # ----以下为变量--------------
+        start_app(self.Game_Name)
 
     # ----------------------------------基础程序部分（此部分所有游戏一致，不需要更改）--------------------------------------------
 
@@ -110,26 +101,15 @@ class OpencvGame:
 
     # -----------------------------以下为各游戏的不同部分--------------------------------------------
 
+
+'''
     def Check_Game_Mode(self, Ocr_Text):
         if "" in Ocr_Text:
             return
 
         # ----------------------------------主程序部分(不需要更改)--------------------------------------------
 
-    if __name__ == '__main__':
-        start_app(Game_Name)
-        while True:
-
-            Game_Ocr_Text = Pic_Ocr_Unshape()
-            Game_Mode_RGB = Get_Pixel_Rgb(Check_Game_Mode_RGB_Coordinate)
-
-            try:
-                print(Game_Ocr_Text)
-            except:
-                pass
-
-            print(Game_Mode_RGB)
-
-            Game_Mode = Check_Game_Mode(Game_Ocr_Text)
-
+    Game_Mode = self.Check_Game_Mode(Game_Ocr_Text)
     # --------------------------------以下部分为主程序中的专属部分-----------------------------
+
+'''

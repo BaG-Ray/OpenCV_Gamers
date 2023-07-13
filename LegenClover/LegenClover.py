@@ -1,29 +1,25 @@
-# ----------------------------------引用部分（此部分所有脚本都一样，不需要修改）--------------------------------------------
 # -*- encoding=utf8 -*-
-#   Version = 3.0
-#   UpdateTime = 2023-05-18
-__author__ = "Ray"
+#   Version = 4.0
+#   UpdateTime = 2023-07-13
+
+# ----------------------------------4.0更新---------------------------------------------------
+# UpdateTime = 2023-07-13
+# 本次在优化后，将之前的版本调整为类的模式，方便其他程序直接调用即可
+
+__author__ = "BaG-Ray+"
+
+# ----------------------------------引用部分（此部分所有脚本都一样，不需要修改）--------------------------------------------
 
 import datetime
-import os
-import shutil
 
-import cv2
-import pytesseract
-from airtest.cli.parser import cli_setup
 from airtest.core.api import *
-from PIL import Image
 
-if not cli_setup():
-    auto_setup(__file__, logdir=True, devices=["ios:///http+usbmux://00008020-001318C00A91002E", ])
-
-from poco.drivers.ios import iosPoco
-
-poco = iosPoco()
+# 引入默认类脚本
+import Default_Scripts
 
 # ----------------------------------变量部分（需要改）--------------------------------------------
 
-# ----以下为图片--------------
+# ------------------------------------以下为图片----------------------------------------------
 Nimue_Val_Pic = Template(r"tpl1684233899964.png", record_pos=(0.422, 0.073), resolution=(2224, 1668))
 Nimue_Val_Q_Pic = Template(r"tpl1684233920975.png", record_pos=(-0.416, 0.081), resolution=(2224, 1668))
 Hadesu_Sch_Pic = Template(r"tpl1684233955768.png", record_pos=(0.421, 0.094), resolution=(2224, 1668))
@@ -53,7 +49,8 @@ Quest_SiDa_Pic = Template(r"tpl1678440059060.png", record_pos=(-0.36, -0.356), r
 Quest_Event_Pic = Template(r"tpl1678518798688.png", record_pos=(0.402, 0.221), resolution=(2224, 1668))
 
 Quest_Xilai_Lv80_Pic = Template(r"tpl1684398881004.png", record_pos=(0.301, 0.026), resolution=(2224, 1668))
-# ----以下为坐标---------------
+
+# ----------------------------------------------------以下为坐标-----------------------------------------------
 
 Ok_Coordinate = (1245, 1027)
 Ok_Present_Coordinate = (1102, 1115)
@@ -115,7 +112,7 @@ Check_Game_Mode_Coordinate = (214, 47)
 Get_Fragment_Coordinate = (1116, 1136)
 Button_Finish_Quest_Coordinate = (2019, 1584)
 
-# ------以下为变量------------
+# --------------------------------------以下为变量--------------------------------------------
 # Log_Dir = './log'
 Log_Dir = './LegenClover/log'
 Game_Name = "com.dmm.games.legeclo"
@@ -175,69 +172,9 @@ Check_Game_Mode_Mission_Finish_RGB = (39, 72, 125)
 Quest_XiLai_Check_RGB_Coordinate = (2052, 1307)
 Quest_XiLai_Check_RGB = (57, 2, 85)
 
-
 # ----------------------------------基础程序部分（此部分所有游戏一致，不需要更改）--------------------------------------------
 
-# 未裁剪的图片，也就是还没有打开过的图片就用这个来读取ocr,此时读取的应该是全地址。更改为判断游戏状态相关
-def Pic_Ocr_Unshape():
-    snapshot(filename='Game_Pic.jpg')
-    Pic_Dir = Log_Dir + '/Game_Pic.jpg'
-    Ocr_Pic = Image.open(Pic_Dir)
-    Ocr_Text = pytesseract.image_to_string(Ocr_Pic, lang='jpn')
-    return (Ocr_Text)
-
-
-def Remove_Temp_File():
-    for root, dirs, files in os.walk(Log_Dir, topdown=False):
-        for name in files:
-            try:
-                os.remove(os.path.join(root, name))
-            except:
-                continue
-
-
-def Exit_Game():
-    print("游戏结束，退出游戏")
-    stop_app(Game_Name)
-    Remove_Temp_File()
-    exit()
-
-
-def Get_Pixel_Rgb(Coordinate):
-    snapshot(filename='Game_Pic.jpg')
-    Pic_Dir = Log_Dir + '/Game_Pic.jpg'
-    Img_Pic = Image.open(Pic_Dir)
-    r, g, b = Img_Pic.getpixel(Coordinate)
-    return (r, g, b)
-
-
-def Pic_Ocr_Shape(x1, y1, x2, y2):
-    if x1 < x2:
-        xx1 = x1
-        xx2 = x2
-    else:
-        xx1 = x2
-        xx2 = x1
-    if y1 < y2:
-        yy1 = y1
-        yy2 = y2
-    else:
-        yy1 = y2
-        yy2 = y1
-
-    snapshot(filename='Game_Pic.jpg')
-    Pic_Dir = Log_Dir + '/Game_Pic.jpg'
-    Ocr_Pic = cv2.imread(Pic_Dir)
-    Ocr_Auto_Pic = Ocr_Pic[yy1:yy2, xx1:xx2]
-    # CV2_Show_Pic(Ocr_Auto_Pic)
-    Ocr_Text = pytesseract.image_to_string(Ocr_Auto_Pic, config="-c tessedit_char_whitelist=0123456789/")
-    return (Ocr_Text)
-
-
-def CV2_Show_Pic(Pic_Data):
-    cv2.namedWindow("image")  # 创建一个image的窗口
-    cv2.imshow("image", Pic_Data)  # 显示图像
-    cv2.waitKey()  # 默认为0，无限等待
+LegendCloverClass = Default_Scripts.OpencvGame(Game_Name)
 
 
 # -----------------------------以下为各游戏的不同部分--------------------------------------------
@@ -246,7 +183,7 @@ def CV2_Show_Pic(Pic_Data):
 def Check_Game_Mode(Ocr_Text, Game_Process):
     if "詳細な情報につきましては公式Twitterをご確認ください" in Ocr_Text:
         print("正在更新中，请切换下个游戏")
-        Exit_Game()
+        LegendCloverClass.Exit_Game()
         return 0
 
     if "Loading" in Ocr_Text and "容量" not in Ocr_Text:
@@ -440,7 +377,7 @@ def Check_Game_Mode(Ocr_Text, Game_Process):
 # 此函数为判断当前碎片个数，并给出如下逻辑，返回目前有的碎片数和当前升星所需要的碎片数，若需要升星的碎片数不为50或100，即为150，表明此时为五星，按照目前规划，不需要升级。因此
 # 当前的个数不应该超过100，后续给出判断，若当前数大于100，就不跑这个碎片本。此函数应当在故事模块中个人页里的详细中进行查看。
 def Get_Fragment_Num():
-    Ocr_Text = Pic_Ocr_Shape(1060, 1010, 1190, 1045)
+    Ocr_Text = LegendCloverClass.Pic_Ocr_Shape(1060, 1010, 1190, 1045)
 
     Fragent_List = Ocr_Text.split('/')
     Fragent_Need = Fragent_List[1]
@@ -459,7 +396,7 @@ def Heroine_Swipe_Count():
 
 # 此函数用来获取今日可以打几次故事模式
 def Get_Fragment_Times():
-    Ocr_Text = Pic_Ocr_Shape(1940, 9, 2065, 70)
+    Ocr_Text = LegendCloverClass.Pic_Ocr_Shape(1940, 9, 2065, 70)
 
     Fragent_List = Ocr_Text.split('/')
     Fragent_Now_Times = Fragent_List[0]
@@ -551,271 +488,270 @@ def Quest_Skip_NoReturn(Quest_Coordinate, Skip_Coordinate):
 
 
 def Get_Stamina():
-    Ocr_Text = Pic_Ocr_Shape(1041, 63, 1211, 8)
+    Ocr_Text = LegendCloverClass.Pic_Ocr_Shape(1041, 63, 1211, 8)
     Ocr_Text_List = Ocr_Text.split('/')
     Stamina = Ocr_Text_List[0]
-    return (int(Stamina))
+    return int(Stamina)
 
 
 # ----------------------------------主程序部分(不需要更改)--------------------------------------------
 
-if __name__ == '__main__':
-    start_app(Game_Name)
 
-    now = datetime.datetime.now()
-    weekday = now.weekday()
+now = datetime.datetime.now()
+weekday = now.weekday()
 
-    while True:
+while True:
 
-        Game_Ocr_Text = Pic_Ocr_Unshape()
-        try:
-            print(Game_Ocr_Text)
-        except:
-            pass
+    Game_Ocr_Text = LegendCloverClass.Pic_Ocr_Unshape()
+    try:
+        print(Game_Ocr_Text)
+    except:
+        pass
 
-        Game_Mode_RGB = Get_Pixel_Rgb(Check_Game_Mode_Coordinate)
-        print(Game_Mode_RGB)
+    Game_Mode_RGB = LegendCloverClass.Get_Pixel_Rgb(Check_Game_Mode_Coordinate)
+    print(Game_Mode_RGB)
 
-        # --------------------------------以下部分为主程序中的专属部分-----------------------------
+    # --------------------------------以下部分为主程序中的专属部分-----------------------------
 
-        # ------------------------    测试代码可在上面写,下面为正式代码----------------------------
-        Game_Mode = Check_Game_Mode(Game_Ocr_Text, Game_Process)
-        print(Game_Mode)
-        if Game_Mode == 2:
-            # 音量设定
-            touch(Ok_Coordinate)
-            sleep(2)
-            touch(Ok_Coordinate)
-            continue
+    # ------------------------    测试代码可在上面写,下面为正式代码----------------------------
+    Game_Mode = Check_Game_Mode(Game_Ocr_Text, Game_Process)
+    print(Game_Mode)
 
-        if Game_Mode == 3:
-            # 标题界面
-            touch(Ok_Coordinate)
-            continue
+    if Game_Mode == 2:
+        # 音量设定
+        touch(Ok_Coordinate)
+        sleep(2)
+        touch(Ok_Coordinate)
+        continue
 
-        if Game_Mode == 3.5:
-            # 每日奖励领取完成
-            touch(Ok_Present_Coordinate)
-            sleep(6)
-            touch(Close_Present_Coordinate)
-            touch(Close_Present_Coordinate)
-            Game_Process = 0
+    if Game_Mode == 3:
+        # 标题界面
+        touch(Ok_Coordinate)
+        continue
 
-        # 第一次在主界面是刚登录的时候，此时先收礼物
-        if Game_Mode == 4 and Game_Process == 0:
-            touch(Present_Box_Coordinate)
-            Game_Process = Game_Process + 1
-            continue
+    if Game_Mode == 3.5:
+        # 每日奖励领取完成
+        touch(Ok_Present_Coordinate)
+        sleep(6)
+        touch(Close_Present_Coordinate)
+        touch(Close_Present_Coordinate)
+        Game_Process = 0
 
-        # 第二次在主界面是收取完成礼物后，此时先打碎片
-        if Game_Mode == 4 and Game_Process == 1:
-            touch(Story_Coordinate)
-            Game_Process = 8
-            continue
+    # 第一次在主界面是刚登录的时候，此时先收礼物
+    if Game_Mode == 4 and Game_Process == 0:
+        touch(Present_Box_Coordinate)
+        Game_Process = Game_Process + 1
+        continue
 
-        if Game_Mode == 5:
-            # 正在领取礼物
-            touch(Present_Get_Coordinate)
-            sleep(2)
-            continue
+    # 第二次在主界面是收取完成礼物后，此时先打碎片
+    if Game_Mode == 4 and Game_Process == 1:
+        touch(Story_Coordinate)
+        Game_Process = 8
+        continue
 
-        if Game_Mode == 6:
-            # 礼物领取完成
-            sleep(1)
-            touch(Ok_Present_Coordinate)
-            continue
+    if Game_Mode == 5:
+        # 正在领取礼物
+        touch(Present_Get_Coordinate)
+        sleep(2)
+        continue
 
-        if Game_Mode == 6.5:
-            # 关闭礼物盒子
-            touch(Close_PresentBox_Coordinate)
-            continue
+    if Game_Mode == 6:
+        # 礼物领取完成
+        sleep(1)
+        touch(Ok_Present_Coordinate)
+        continue
 
-        if Game_Mode == 7:
-            # 判断碎片个数
-            Get_Fragment_Num()
-            continue
+    if Game_Mode == 6.5:
+        # 关闭礼物盒子
+        touch(Close_PresentBox_Coordinate)
+        continue
 
-        # 进入角色碎片界面,打完后进入Quest界面
-        if Game_Mode == 8:
-            Query_Fragment()
-            sleep(2)
+    if Game_Mode == 7:
+        # 判断碎片个数
+        Get_Fragment_Num()
+        continue
+
+    # 进入角色碎片界面,打完后进入Quest界面
+    if Game_Mode == 8:
+        Query_Fragment()
+        sleep(2)
+        touch(Quest_Coordinate)
+        continue
+
+    '''
+    #进入Quest界面，总共有六个步骤需要进行，首先打Master本
+    if Game_Mode == 17 and  Game_Process == 2:
+        touch(Quest_Master_Coordinate)
+        Game_Process = 3
+        continue
+
+    #打每日本，每日本中有四个，因此分开进行
+    if Game_Mode == 17 and Game_Process == 3:
+        touch(Quest_Daily_Coordinate)
+        continue
+
+    if Game_Mode == 9 and Game_Process < 8:
+        if Game_Process == 3:
+            touch(Quest_JingYan_Coordinate)
+        if Game_Process == 4:
+            touch(Quest_HaoGan_Coordinate)
+        if Game_Process == 5:
+            touch(Quest_JinBi_Coordinate)
+        if Game_Process == 6:
+            touch(Quest_SiDa_Coordinate)
+        if Game_Process == 7:
+            touch(Return_Coordinate)
+        Game_Process = Game_Process + 1
+        continue
+    '''
+
+    if Game_Mode == 14:
+        # 霸者之塔界面
+        Tower_Now_R, Tower_Now_G, Tower_Now_B = LegendCloverClass.Get_Pixel_Rgb((Tower_Pixel_X, Tower_Pixel_Y))
+        if Tower_Now_R == Tower_R and Tower_Now_G == Tower_G and Tower_Now_B == Tower_B:
+            touch(Return_Coordinate)
+        continue
+
+    if Game_Mode == 15:
+        # Sub关卡选择第几部
+        touch(Quest_Sub_10_Coordinate)
+        continue
+
+    # 查看勇者之塔
+    if Game_Mode == 17 and Game_Process == 8:
+        touch(Quest_Tower_Coordinate)
+        Game_Process = Game_Process + 1
+        continue
+
+    # Main Quest打袭来
+    if Game_Mode == 17 and Game_Process == 9:
+        touch(Quest_Main_Coordinate)
+        continue
+
+    if Game_Mode == 17.5:
+        # 已进入Main Quest界面
+        Quest_XiLai_Check_Now_RGB = LegendCloverClass.Get_Pixel_Rgb(Quest_XiLai_Check_RGB_Coordinate)
+        if Quest_XiLai_Check_Now_RGB != Quest_XiLai_Check_RGB:
+            touch(Quest_XiLai_Coordinate)
+        else:
             touch(Quest_Coordinate)
-            continue
-
-        '''
-        #进入Quest界面，总共有六个步骤需要进行，首先打Master本
-        if Game_Mode == 17 and  Game_Process == 2:
-            touch(Quest_Master_Coordinate)
-            Game_Process = 3
-            continue
-
-        #打每日本，每日本中有四个，因此分开进行
-        if Game_Mode == 17 and Game_Process == 3:
-            touch(Quest_Daily_Coordinate)
-            continue
-
-        if Game_Mode == 9 and Game_Process < 8:
-            if Game_Process == 3:
-                touch(Quest_JingYan_Coordinate)
-            if Game_Process == 4:
-                touch(Quest_HaoGan_Coordinate)
-            if Game_Process == 5:
-                touch(Quest_JinBi_Coordinate)
-            if Game_Process == 6:
-                touch(Quest_SiDa_Coordinate)
-            if Game_Process == 7:
-                touch(Return_Coordinate)
             Game_Process = Game_Process + 1
-            continue
-        '''
-
-        if Game_Mode == 14:
-            # 霸者之塔界面
-            Tower_Now_R, Tower_Now_G, Tower_Now_B = Get_Pixel_Rgb((Tower_Pixel_X, Tower_Pixel_Y))
-            if Tower_Now_R == Tower_R and Tower_Now_G == Tower_G and Tower_Now_B == Tower_B:
-                touch(Return_Coordinate)
-            continue
-
-        if Game_Mode == 15:
-            # Sub关卡选择第几部
-            touch(Quest_Sub_10_Coordinate)
-            continue
-
-        # 查看勇者之塔
-        if Game_Mode == 17 and Game_Process == 8:
-            touch(Quest_Tower_Coordinate)
-            Game_Process = Game_Process + 1
-            continue
-
-        # Main Quest打袭来
-        if Game_Mode == 17 and Game_Process == 9:
-            touch(Quest_Main_Coordinate)
-            continue
-
-        if Game_Mode == 17.5:
-            # 已进入Main Quest界面
-            Quest_XiLai_Check_Now_RGB = Get_Pixel_Rgb(Quest_XiLai_Check_RGB_Coordinate)
-            if Quest_XiLai_Check_Now_RGB != Quest_XiLai_Check_RGB:
-                touch(Quest_XiLai_Coordinate)
-            else:
-                touch(Quest_Coordinate)
-                Game_Process = Game_Process + 1
-                sleep(5)
-            continue
-
-        # 打Sub
-        if Game_Mode == 17 and Game_Process == 10:
-            touch(Quest_Sub_Coordinate)
-            continue
-
-        if Game_Mode == 18:
-            # 袭来界面
-            XiLai_Now_R, XiLai_Now_G, XiLai_Now_B = Get_Pixel_Rgb((XiLai_Pixel_X, XiLai_Pixel_Y))
-            if XiLai_Now_R == XiLai_R and XiLai_Now_G == XiLai_G and XiLai_Now_B == XiLai_B:
-                touch((XiLai_Pixel_X, XiLai_Pixel_Y))
-                sleep(1)
-                touch(Quest_Xilai_Lv80_Pic)
-                sleep(5)
-                touch(Quest_XiLai_Fight_Coordinate)
-            continue
-
-        if Game_Mode == 19:
-            # 战斗界面
-            touch(Battle_Coordinate)
-            continue
-
-        if Game_Mode == 21:
-            # 战斗界面
-            touch(Battle_Next_Coordinate)
-            sleep(10)
-            touch(Button_Finish_Quest_Coordinate)
-            continue
-
-        # 打一关sub然后去拿每日任务
-        if Game_Mode == 22 and Game_Process == 10:
-            Quest_Skip_NoReturn(Quest_Sub_6_Coordinate, Skip_Coordinate)
-            sleep(2)
-            touch(Home_Page_Coordinate)
-            Game_Process = Game_Process + 1
-            continue
-
-        if Game_Mode == 4 and Game_Process == 11:
-            touch(Daily_Finish_Button_Coordinate)
-            Game_Process = Game_Process + 1
-            continue
-
-        if Game_Mode == 4 and Game_Process == 12:
-            touch(Mission_Coordinate)
-            Game_Process = Game_Process - 1
-            continue
-
-        if Game_Mode == 31:
-            touch(Quest_Coordinate)
-            sleep(1)
-            touch(Quest_Coordinate)
-            continue
-
-        if Game_Mode == 17 and Game_Process == 11:
-            touch(Quest_Sub_Coordinate)
-            continue
-
-        # 只有体力大于10的时候才跑sub，否则回到Quest界面执行下个操作
-        if Game_Mode == 22 and Game_Process == 11:
-            Stamina = Get_Stamina()
-            if Stamina >= 10:
-                Quest_Skip_NoReturn(Sub_List[Sub_Count], Skip_Coordinate)
-                Sub_Count = Sub_Count + 1
-                if Sub_Count == 8:
-                    Sub_Count = 0
-            else:
-                touch(Quest_Coordinate)
-                Game_Process = Game_Process + 1
-            continue
-
-        if Game_Mode == 17 and Game_Process == 12:
-            touch(Quest_Event_Coordinate)
-            continue
-
-        if Game_Mode == 23:
-            # 领取每日任务
-            touch(Mission_Get_Coordinate)
             sleep(5)
-            touch(Close_PresentBox_Coordinate)
-            continue
+        continue
 
-        if Game_Mode == 24:
-            # 领取奖励
-            touch(Ok_Present_Coordinate)
-            sleep(2)
-            touch(Ok_Present_Coordinate)
-            sleep(3)
+    # 打Sub
+    if Game_Mode == 17 and Game_Process == 10:
+        touch(Quest_Sub_Coordinate)
+        continue
+
+    if Game_Mode == 18:
+        # 袭来界面
+        XiLai_Now_R, XiLai_Now_G, XiLai_Now_B = LegendCloverClass.Get_Pixel_Rgb((XiLai_Pixel_X, XiLai_Pixel_Y))
+        if XiLai_Now_R == XiLai_R and XiLai_Now_G == XiLai_G and XiLai_Now_B == XiLai_B:
+            touch((XiLai_Pixel_X, XiLai_Pixel_Y))
+            sleep(1)
+            touch(Quest_Xilai_Lv80_Pic)
+            sleep(5)
+            touch(Quest_XiLai_Fight_Coordinate)
+        continue
+
+    if Game_Mode == 19:
+        # 战斗界面
+        touch(Battle_Coordinate)
+        continue
+
+    if Game_Mode == 21:
+        # 战斗界面
+        touch(Battle_Next_Coordinate)
+        sleep(10)
+        touch(Button_Finish_Quest_Coordinate)
+        continue
+
+    # 打一关sub然后去拿每日任务
+    if Game_Mode == 22 and Game_Process == 10:
+        Quest_Skip_NoReturn(Quest_Sub_6_Coordinate, Skip_Coordinate)
+        sleep(2)
+        touch(Home_Page_Coordinate)
+        Game_Process = Game_Process + 1
+        continue
+
+    if Game_Mode == 4 and Game_Process == 11:
+        touch(Daily_Finish_Button_Coordinate)
+        Game_Process = Game_Process + 1
+        continue
+
+    if Game_Mode == 4 and Game_Process == 12:
+        touch(Mission_Coordinate)
+        Game_Process = Game_Process - 1
+        continue
+
+    if Game_Mode == 31:
+        touch(Quest_Coordinate)
+        sleep(1)
+        touch(Quest_Coordinate)
+        continue
+
+    if Game_Mode == 17 and Game_Process == 11:
+        touch(Quest_Sub_Coordinate)
+        continue
+
+    # 只有体力大于10的时候才跑sub，否则回到Quest界面执行下个操作
+    if Game_Mode == 22 and Game_Process == 11:
+        Stamina = Get_Stamina()
+        if Stamina >= 10:
+            Quest_Skip_NoReturn(Sub_List[Sub_Count], Skip_Coordinate)
+            Sub_Count = Sub_Count + 1
+            if Sub_Count == 8:
+                Sub_Count = 0
+        else:
             touch(Quest_Coordinate)
-            continue
+            Game_Process = Game_Process + 1
+        continue
 
-        if Game_Mode == 25:
-            if exists(Quest_Event_Pic):
-                touch(Quest_Event_Quest_Coordinate)
-                print("现在是活动时间")
-            continue
+    if Game_Mode == 17 and Game_Process == 12:
+        touch(Quest_Event_Coordinate)
+        continue
 
-        if Game_Mode == 27:
-            for Event_Num in Event_List:
-                Quest_Skip_NoReturn(Event_Num, Skip_Coordinate)
-                touch(Return_Coordinate)
-            Exit_Game()
-            continue
+    if Game_Mode == 23:
+        # 领取每日任务
+        touch(Mission_Get_Coordinate)
+        sleep(5)
+        touch(Close_PresentBox_Coordinate)
+        continue
 
-        if Game_Mode == 28:
-            # 更新
-            touch(Ok_Coordinate)
-            continue
+    if Game_Mode == 24:
+        # 领取奖励
+        touch(Ok_Present_Coordinate)
+        sleep(2)
+        touch(Ok_Present_Coordinate)
+        sleep(3)
+        touch(Quest_Coordinate)
+        continue
 
-        if Game_Mode == 29:
-            # 更新完成
-            touch(Ok_Present_Coordinate)
-            continue
+    if Game_Mode == 25:
+        if exists(Quest_Event_Pic):
+            touch(Quest_Event_Quest_Coordinate)
+            print("现在是活动时间")
+        continue
 
-        if Game_Mode == 30:
-            # 公告
-            touch(Close_News_Coordinate)
-            continue
+    if Game_Mode == 27:
+        for Event_Num in Event_List:
+            Quest_Skip_NoReturn(Event_Num, Skip_Coordinate)
+            touch(Return_Coordinate)
+        LegendCloverClass.Exit_Game()
+        continue
+
+    if Game_Mode == 28:
+        # 更新
+        touch(Ok_Coordinate)
+        continue
+
+    if Game_Mode == 29:
+        # 更新完成
+        touch(Ok_Present_Coordinate)
+        continue
+
+    if Game_Mode == 30:
+        # 公告
+        touch(Close_News_Coordinate)
+        continue
