@@ -1,171 +1,249 @@
-#----------------------------------引用部分（此部分所有脚本都一样，不需要修改）--------------------------------------------
 # -*- encoding=utf8 -*-
-#Version = 2.1
+#   Version = 1.1
+#   UpdateTime = 2023-07-16
 
-__author__ = "Ray"
+# ----------------------------------1.0更新---------------------------------------------------
+# UpdateTime = 2023-07-16
+# 将原有模块进行拆分，方便后续的维护，以及当前界面的更好的识别
+# 理论上这个脚本以后应该不会在需要大更新了，可能只有更新下刷碎片角色的小更新
 
-import os
-import shutil
+# ----------------------------------1.1更新---------------------------------------------------
+# UpdateTime = 2023-07-16
+# 更新六个碎片信息，本来应该更多的，而且前两个也快满了，但截图的时候就忘了。
+# 估计很快就会更行1.2了吧
 
-import cv2
-import pytesseract
-from airtest.cli.parser import cli_setup
+__author__ = "BaG-Ray+"
+
+# ----------------------------------引用部分（此部分所有脚本都一样，不需要修改）--------------------------------------------
+
 from airtest.core.api import *
-from PIL import Image
 
-if not cli_setup():
-    auto_setup(__file__, logdir=True, devices=["ios:///http+usbmux://00008020-001318C00A91002E",])
+# 引入默认类脚本
+import Default_Scripts
+import LegenClover_Class
 
-from poco.drivers.ios import iosPoco
+# ----------------------------------变量部分（需要改）--------------------------------------------
 
-poco = iosPoco()
+# ------------------------------------以下为图片----------------------------------------------
 
-#----------------------------------变量部分（需要改）--------------------------------------------
+Soru_Pic = Template(r"tpl1689506462564.png", record_pos=(0.193, 0.03), resolution=(2400, 1080))
+Soru_Q_Pic = Template(r"tpl1689506477625.png", record_pos=(-0.436, 0.076), resolution=(2400, 1080))
+Morigan_Pic = Template(r"tpl1689506512391.png", record_pos=(0.355, 0.002), resolution=(2400, 1080))
+Morigan_Q_Pic = Template(r"tpl1689506533213.png", record_pos=(-0.432, 0.08), resolution=(2400, 1080))
+Zikufurito_Pic = Template(r"tpl1689506590196.png", record_pos=(0.275, 0.031), resolution=(2400, 1080))
+Zikufurito_Q_Pic = Template(r"tpl1689506606643.png", record_pos=(-0.441, 0.081), resolution=(2400, 1080))
+Yanmo_Pic = Template(r"tpl1689506674734.png", record_pos=(0.194, -0.036), resolution=(2400, 1080))
+Yanmo_Q_Pic = Template(r"tpl1689506689563.png", record_pos=(-0.438, 0.055), resolution=(2400, 1080))
+Katia_Pic = Template(r"tpl1689506815678.png", record_pos=(0.274, 0.065), resolution=(2400, 1080))
+Katia_Q_Pic = Template(r"tpl1689506823333.png", record_pos=(-0.435, 0.077), resolution=(2400, 1080))
+Tianjiang_Pic = Template(r"tpl1689506918618.png", record_pos=(0.435, 0.104), resolution=(2400, 1080))
+Tianjiang_Q_Pic = Template(r"tpl1689506931529.png", record_pos=(-0.443, 0.065), resolution=(2400, 1080))
 
-#-----以下为基础部分--------
+# ----------------------------------------------------以下为坐标-----------------------------------------------
 
-Log_Dir = './LegenClover/log'
+Check_Game_Mode_Coordinate = (2333, 27)
+
+Sub_Heroine_Coordinate = (1812, 164)
+Main_Heroine_Coordinate = (1642, 162)
+Get_Fragment_Coordinate = (1453, 788)
+Close_Fragment_Coordinate = (1540, 350)
+
+Swipe_Start_Coordinate = (1957, 777)
+Swipe_End_Coordinate = (1957, 496)
+
+Fragment_Pic_First_Coordinate = (1390, 693)
+Fragment_Pic_Second_Coordinate = (1519, 723)
+Times_Pic_First_Coordinate = (1920, 20)
+Times_Pic_Second_Coordinate = (2020, 58)
+
+# --------------------------------------以下为变量--------------------------------------------
+
+Fragment_Heroine_List = [
+    2, Soru_Pic, Soru_Q_Pic,
+    2, Morigan_Pic, Morigan_Q_Pic,
+    1, Zikufurito_Pic, Zikufurito_Q_Pic,
+    1, Yanmo_Pic, Yanmo_Q_Pic,
+    1, Katia_Pic, Katia_Q_Pic,
+    2, Tianjiang_Pic, Tianjiang_Q_Pic
+]
+
+# --------------------------------------以下为RGB参数--------------------------------------------
+
+Check_Game_Mode_Coordinate_Story_RGB = (178, 178, 178)
+Check_Game_Mode_Coordinate_HomePage_RGB = (83, 167, 255)
+
+Get_Fragment_RGB = (88, 88, 88)
+
+# ----------------------------------基础程序部分（此部分所有游戏一致，不需要更改）--------------------------------------------
+
+
+# ----------------------------------以下为启动部分--------------------------------------------
+
 Game_Name = "com.dmm.games.legeclo"
-Game_Process = 0
+LegendCloverScriptsClass = Default_Scripts.OpencvGame(Game_Name)
+LegendCloverVariable = LegenClover_Class.Universal_Variable()
 
-#----以下为图片--------------
 
-Skip_Pic = Template(r"tpl1679350197647.png", record_pos=(0.432, -0.35), resolution=(2224, 1668))
-Determine_Story_Pic = Template(r"tpl1679351549769.png", record_pos=(0.107, -0.208), resolution=(2224, 1668))
-OK_Pic = Template(r"tpl1679351604028.png", record_pos=(-0.002, 0.073), resolution=(2224, 1668))
-Star_Pic = Template(r"tpl1679357755696.png", record_pos=(-0.021, 0.095), resolution=(2224, 1668))
+# -----------------------------以下为各游戏的不同部分--------------------------------------------
 
-#----以下为坐标--------------
+# 此函数为判断当前碎片个数，并给出如下逻辑，返回目前有的碎片数和当前升星所需要的碎片数，若需要升星的碎片数不为50或100，即为150，表明此时为五星，按照目前规划，不需要升级。因此
+# 当前的个数不应该超过100，后续给出判断，若当前数大于100，就不跑这个碎片本。此函数应当在故事模块中个人页里的详细中进行查看。
+def Get_Fragment_Num():
+    Ocr_Text = LegendCloverScriptsClass.Pic_Ocr_Shape(Fragment_Pic_First_Coordinate[0],
+                                                      Fragment_Pic_First_Coordinate[1],
+                                                      Fragment_Pic_Second_Coordinate[0],
+                                                      Fragment_Pic_Second_Coordinate[1])
 
-Story_Episode_1_Coordinate = (2028,529)
-Story_Episode_2_Coordinate = (2028,668)
-Story_Episode_3_Coordinate = (2028,808)
+    Fragment_List = Ocr_Text.split('/')
+    Fragment_Need = Fragment_List[1]
+    Fragment_Now = Fragment_List[0]
+    return int(Fragment_Need), int(Fragment_Now)
 
-Get_R18_Present_Coordinate = (1257,1074)
-Get_R18_Present_Coordinate_OK = (1100,979)
 
-Next_Heroine_Coordinate = (1063,811)
+# 以下两个函数用来在角色碎片中滑动
+def Heroine_Swipe():
+    swipe(Swipe_Start_Coordinate, Swipe_End_Coordinate)
 
-#----以下为变量--------------
 
-Story_Episode_1_Color = (160, 72, 60)
-Story_Episode_2_Color = (181, 124, 139)
-Story_Episode_3_Color = (151, 131, 120)
+def Heroine_Swipe_Count():
+    swipe(Swipe_End_Coordinate, Swipe_Start_Coordinate)
 
-#----------------------------------基础程序部分（此部分所有游戏一致，不需要更改）--------------------------------------------
 
-#未裁剪的图片，也就是还没有打开过的图片就用这个来读取ocr,此时读取的应该是全地址。更改为判断游戏状态相关
-def Pic_Ocr_Unshape():
-    snapshot(filename = 'Game_Pic.jpg')
-    Pic_Dir = Log_Dir + '/Game_Pic.jpg'
-    Ocr_Pic = Image.open(Pic_Dir)
-    Ocr_Text = pytesseract.image_to_string(Ocr_Pic, lang='jpn')
-    return(Ocr_Text)
+# 此函数用来获取今日可以打几次故事模式
+def Get_Fragment_Times():
+    Ocr_Text = LegendCloverScriptsClass.Pic_Ocr_Shape(Times_Pic_First_Coordinate[0],
+                                                      Times_Pic_First_Coordinate[1],
+                                                      Times_Pic_Second_Coordinate[0],
+                                                      Times_Pic_Second_Coordinate[1])
 
-def Remove_Temp_File():
-    for root, dirs, files in os.walk(Log_Dir, topdown=False):
-        for name in files:
-            try:
-                os.remove(os.path.join(root, name))
-            except:
+    Fragent_List = Ocr_Text.split('/')
+    Fragent_Now_Times = Fragent_List[0]
+    return int(Fragent_Now_Times)
+
+
+# 此函数用来进入角色的碎片界面：总共分为三个步骤，首先是通过Fragment_Heroine_List中第一位为区分main还是sub角色，第二步再找到角色，第三步判断找到角色后的界面是否正确，正确则执行，否则重新来一次
+def Query_Fragment():
+    Heroine_Now = 0
+    Fragment_Times = Get_Fragment_Times()
+    Heroine_Times = (Fragment_Times - 1) / 3
+
+    while Heroine_Now <= Heroine_Times:
+
+        if Fragment_Heroine_List[Heroine_Now * 3] == 1:
+            touch(Main_Heroine_Coordinate)
+        else:
+            touch(Sub_Heroine_Coordinate)
+
+        Heroine_Find(Heroine_Now)
+
+        if exists(Fragment_Heroine_List[Heroine_Now * 3 + 2]):
+            '''
+            while not exists(Story_Character_Pic):
+                touch(Story_Character_Coordinate)
+            #此时进入到个人页面,先检查碎片个数
+            '''
+
+            # touch(Fragment_Check_Coordinate)
+            Fragent_Need, Fragent_Now = Get_Fragment_Num()
+            # touch(Close_Fragment_Coordinate)
+
+            if Fragent_Need == 150 or Fragent_Now > 100:
+                Heroine_Times = Heroine_Times + 1
+                Heroine_Now = Heroine_Now + 1
+                touch(LegendCloverVariable.Return_Coordinate)
                 continue
 
-def Exit_Game():
-    print("游戏结束，退出游戏")
-    stop_app(Game_Name)
-    Remove_Temp_File()
-    exit()
+            else:
+                # Quest_Skip(Quest_Fragment_Coordinate,Skip_Coordinate)
+                touch(Get_Fragment_Coordinate)
 
-def Get_Pixel_Rgb(Coordinate):
-    snapshot(filename = 'Game_Pic.jpg')
-    Pic_Dir = Log_Dir + '/Game_Pic.jpg'
-    Img_Pic = Image.open(Pic_Dir)
-    r, g, b = Img_Pic.getpixel(Coordinate)
-    return (r,g,b)
+                while True:
+                    Fragment_Status = LegendCloverScriptsClass.Get_Pixel_Rgb(Check_Game_Mode_Coordinate)
+                    if Fragment_Status == Get_Fragment_RGB:
+                        # 确保已经拿到碎片，点击即可
+                        # 这里就点击检测点吧
+                        touch(Check_Game_Mode_Coordinate)
+                        break
 
-def Pic_Ocr_Shape(x1,y1,x2,y2):
-    if x1 < x2:
-        xx1 = x1
-        xx2 = x2
-    else:
-        xx1 = x2
-        xx2 = x1
-    if y1 < y2:
-        yy1 = y1
-        yy2 = y2
-    else:
-        yy1 = y2
-        yy2 = y1
+                Heroine_Now = Heroine_Now + 1
 
-    snapshot(filename = 'Game_Pic.jpg')
-    Pic_Dir = Log_Dir + '/Game_Pic.jpg'
-    Ocr_Pic = cv2.imread(Pic_Dir)
-    Ocr_Auto_Pic = Ocr_Pic[yy1:yy2,xx1:xx2]  
-    Ocr_Text = pytesseract.image_to_string(Ocr_Auto_Pic, lang='eng')
-    return(Ocr_Text)
+        else:
+            pass
 
-#-----------------------------以下为各游戏的不同部分--------------------------------------------
+    # 碎片本跑完，
 
 
-def Check_Game_Mode(Ocr_Text):
-    if exists(Star_Pic):
-        print("人物界面")
-        return 1
-    
-    if "指定版" in Ocr_Text:
-        print("R18故事，直接领取")
-        touch(Get_R18_Present_Coordinate)
-        sleep(3)
-        return 2
-    
-    if "oading" in Ocr_Text:
-        print("等待中")
-        return 3
-    
-    if exists(OK_Pic):
-        print("Get Present")
-        touch(Get_R18_Present_Coordinate_OK)
-        return 4
-
-#----------------------------------主程序部分(不需要更改)--------------------------------------------
-        
-    
-if __name__ == '__main__':
-    
+# 此函数用来寻找对应角色，判断逻辑如下：如果当前页面存在则点击，否则往下划，直到新的两行出现在最上面。当划了七次后，如果还没有，证明可能是在原来位置的上面，再往上滑找
+def Heroine_Find(Heroine_Now):
+    SwipeCount = 0
     while True:
-        
-        Game_Ocr_Text = Pic_Ocr_Unshape()
+        if exists(Fragment_Heroine_List[Heroine_Now * 3 + 1]):
+            touch(Fragment_Heroine_List[Heroine_Now * 3 + 1])
+            break
+        elif SwipeCount < 20:
+            Heroine_Swipe()
+            sleep(3)
+            SwipeCount = SwipeCount + 1
+        else:
+            Heroine_Swipe_Count()
+            sleep(3)
+
+
+def Check_Game_Mode(Ocr_Text, Game_Process, Game_Mode_RGB):
+    if Game_Mode_RGB == Check_Game_Mode_Coordinate_Story_RGB:
+        print("目前在故事界面")
+        return 0
+
+    if Game_Mode_RGB == Get_Fragment_RGB:
+        print("碎片领取完成")
+        return 1
+
+    if Game_Mode_RGB == Check_Game_Mode_Coordinate_HomePage_RGB:
+        print("目前在主界面")
+        return 2
+
+
+def Story_Page(Game_Process):
+    # 若目前不在主界面，证明脚本衔接之间出现了问题。
+    # 因此将“Game_Process”原路返还，从哪来的回哪去，重新执行一遍前置脚本
+    if LegendCloverScriptsClass.Get_Pixel_Rgb(Check_Game_Mode_Coordinate) != Check_Game_Mode_Coordinate_Story_RGB:
+        return Game_Process
+
+    while True:
+
+        Game_Ocr_Text = LegendCloverScriptsClass.Pic_Ocr_Unshape()
         try:
             print(Game_Ocr_Text)
         except:
             pass
-        Game_Mode = Check_Game_Mode(Game_Ocr_Text)
 
-#--------------------------------以下部分为主程序中的专属部分-----------------------------
-        if Game_Mode == 1:
-            Story_Episode_1_Now_Color = Get_Pixel_Rgb(Story_Episode_1_Coordinate)
-            Story_Episode_2_Now_Color = Get_Pixel_Rgb(Story_Episode_2_Coordinate)
-            Story_Episode_3_Now_Color = Get_Pixel_Rgb(Story_Episode_3_Coordinate)
+        Game_Mode_RGB = LegendCloverScriptsClass.Get_Pixel_Rgb(Check_Game_Mode_Coordinate)
+        print(Game_Mode_RGB)
 
-            if Story_Episode_1_Now_Color != Story_Episode_1_Color:
-                touch(Story_Episode_1_Coordinate)
-                continue
+        # --------------------------------以下部分为主程序中的专属部分-----------------------------
 
-            if Story_Episode_2_Now_Color != Story_Episode_2_Color:
-                touch(Story_Episode_2_Coordinate)
-                continue
+        # ------------------------    测试代码可在上面写,下面为正式代码----------------------------
+        Game_Mode = Check_Game_Mode(Game_Ocr_Text, Game_Process, Game_Mode_RGB)
+        print(Game_Mode)
 
-            if Story_Episode_3_Now_Color != Story_Episode_3_Color:
-                touch(Story_Episode_3_Coordinate)
-                continue
+        if Game_Mode == 0:
+            # 执行即可
+            Query_Fragment()
 
-            touch(Next_Heroine_Coordinate)
-            sleep(3)
-            continue
-            
-                
-        if exists(Skip_Pic):
-            touch(Skip_Pic)
+            # 故事页只需要跑碎片即可，因此只要确认碎片次数为0即可返回主界面
+            # 否则报错，进行人工判断
+            Times = Get_Fragment_Times()
 
+            if Times == 0:
+                pass
+            else:
+                Times = input("请输入目前故事脚本的运行情况，若返回主界面则输入0")
 
-poco("Window").child("Other")
+            # 返回主界面
+            touch(LegendCloverVariable.Home_Page_Coordinate)
+            sleep(2)
+
+        if Game_Mode == 2:
+            # 目前在主界面
+            Game_Process = 2
+            return Game_Process

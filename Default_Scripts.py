@@ -1,6 +1,6 @@
 # -*- encoding=utf8 -*-
-# Version = 3.0
-# UpdateTime = 2023-07-13
+# Version = 3.3
+# UpdateTime = 2023-07-21
 
 # ----------------------------------2.4更新---------------------------------------------------
 # UpdateTime = 2023-05-18
@@ -10,13 +10,26 @@
 # UpdateTime = 2023-07-13
 # 本次在优化后，将之前的版本调整为类的模式，方便其他程序直接调用即可
 
+# ----------------------------------3.1更新---------------------------------------------------
+# UpdateTime = 2023-07-16
+# 不知道为什么pillow和opencv在读取图片上出现了冲突，可能换了pycharm的原因吧
+# 因此，在此将全部调整为opencv的模式
+
+# ----------------------------------3.2更新---------------------------------------------------
+# UpdateTime = 2023-07-18
+# 修复CV2_Circle_Pic的bug
+# 再次注意，所有的坐标务必确认
+
+# ----------------------------------3.3更新---------------------------------------------------
+# UpdateTime = 2023-07-21
+# 将图片质量拉到最大，试下能否解决每次RGB值都在变化的问题
+
 __author__ = "BaG-Ray+"
 
 # ----------------------------------引用部分（此部分所有脚本都一样，不需要修改）--------------------------------------------
 
 import cv2
 import pytesseract
-from PIL import Image
 from airtest.cli.parser import cli_setup
 from airtest.core.api import *
 
@@ -45,10 +58,15 @@ class OpencvGame:
     # ----------------------------------基础程序部分（此部分所有游戏一致，不需要更改）--------------------------------------------
 
     # 未裁剪的图片，也就是还没有打开过的图片就用这个来读取ocr,此时读取的应该是全地址。更改为判断游戏状态相关
-    def Pic_Ocr_Unshape(self):
-        snapshot(filename='Game_Pic.jpg')
+    def Snap_Read_Pic(self):
+        # self.Remove_Temp_File()
+        snapshot(filename='Game_Pic.jpg', quality=99)
         Pic_Dir = self.Log_Dir + '/Game_Pic.jpg'
-        Ocr_Pic = Image.open(Pic_Dir)
+        Ocr_Pic = cv2.imread(Pic_Dir)
+        return Ocr_Pic
+
+    def Pic_Ocr_Unshape(self):
+        Ocr_Pic = self.Snap_Read_Pic()
         Ocr_Text = pytesseract.image_to_string(Ocr_Pic, lang='jpn')
         return Ocr_Text
 
@@ -63,14 +81,13 @@ class OpencvGame:
     def Exit_Game(self):
         print("游戏结束，退出游戏")
         stop_app(self.Game_Name)
-        self.Remove_Temp_File()
+        # self.Remove_Temp_File()
         exit()
 
     def Get_Pixel_Rgb(self, Coordinate):
-        snapshot(filename='Game_Pic.jpg')
-        Pic_Dir = self.Log_Dir + '/Game_Pic.jpg'
-        Img_Pic = Image.open(Pic_Dir)
-        r, g, b = Img_Pic.getpixel(Coordinate)
+        Img_Pic = self.Snap_Read_Pic()
+        [b, g, r] = Img_Pic[Coordinate[1], Coordinate[0]]
+        # self.CV2_Circle_Pic(Coordinate)
         return r, g, b
 
     def Pic_Ocr_Shape(self, x1, y1, x2, y2):
@@ -80,36 +97,22 @@ class OpencvGame:
         yy1 = min(y1, y2)
         yy2 = max(y1, y2)
 
-        snapshot(filename='Game_Pic.jpg')
-        Pic_Dir = self.Log_Dir + '/Game_Pic.jpg'
-        Ocr_Pic = cv2.imread(Pic_Dir)
+        Ocr_Pic = self.Snap_Read_Pic()
         Ocr_Auto_Pic = Ocr_Pic[yy1:yy2, xx1:xx2]
-        Ocr_Text = pytesseract.image_to_string(Ocr_Auto_Pic, lang='eng')
+        self.CV2_Show_Pic(Ocr_Auto_Pic)
+        Ocr_Text = pytesseract.image_to_string(Ocr_Auto_Pic, lang='eng',
+                                               config='--psm 7 --oem 3 -c tessedit_char_whitelist=0123456789/')
         return Ocr_Text
 
     def CV2_Show_Pic(self, Pic_Data):
-        cv2.namedWindow("image")  # 创建一个image的窗口
         cv2.imshow("image", Pic_Data)  # 显示图像
-        cv2.waitKey()  # 默认为0，无限等待
+        cv2.waitKey(0)
 
-    def CV2_Circle_Pic(self, Pic_Dir, Coordinate):
+    def CV2_Circle_Pic(self, Coordinate):
         # 此函数用于在截图上显示点
-        Cv2_Img = cv2.imread(Pic_Dir)
+        Cv2_Img = self.Snap_Read_Pic()
         Cv2_Circle = cv2.circle(Cv2_Img, Coordinate, 5, (255, 0, 255), -1)
         CV2_Circle_Resize = cv2.resize(Cv2_Circle, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_LINEAR)
         self.CV2_Show_Pic(CV2_Circle_Resize)
 
     # -----------------------------以下为各游戏的不同部分--------------------------------------------
-
-
-'''
-    def Check_Game_Mode(self, Ocr_Text):
-        if "" in Ocr_Text:
-            return
-
-        # ----------------------------------主程序部分(不需要更改)--------------------------------------------
-
-    Game_Mode = self.Check_Game_Mode(Game_Ocr_Text)
-    # --------------------------------以下部分为主程序中的专属部分-----------------------------
-
-'''
