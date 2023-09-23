@@ -1,0 +1,286 @@
+Index: ShinyColors/ShinyColors.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>#----------------------------------引用部分（此部分所有脚本都一样，不需要修改）--------------------------------------------\r\n# -*- encoding=utf8 -*-\r\n#Version = 2.1\r\n\r\n__author__ = \"Ray\"\r\n\r\nimport os\r\nimport shutil\r\n\r\nimport cv2\r\nimport pytesseract\r\nfrom airtest.cli.parser import cli_setup\r\nfrom airtest.core.api import *\r\nfrom PIL import Image\r\n\r\nif not cli_setup():\r\n    auto_setup(__file__, logdir=True, devices=[\"ios:///http+usbmux://00008020-001318C00A91002E\",])\r\n\r\nfrom poco.drivers.ios import iosPoco\r\n\r\npoco = iosPoco()\r\n\r\n#----------------------------------变量部分（需要改）--------------------------------------------\r\n\r\n#-----以下为基础部分--------\r\n\r\nLog_Dir = './ShinyColors/log'\r\nGame_Name = \"jp.co.bandainamcoent.BNEI0354\"\r\nGame_Process = 0\r\n\r\n#----以下为图片--------------\r\n\r\n#----以下为坐标--------------\r\n\r\n#----以下为变量--------------\r\n\r\n\r\n#----------------------------------基础程序部分（此部分所有游戏一致，不需要更改）--------------------------------------------\r\n\r\n#未裁剪的图片，也就是还没有打开过的图片就用这个来读取ocr,此时读取的应该是全地址。更改为判断游戏状态相关\r\ndef Pic_Ocr_Unshape():\r\n    snapshot(filename = 'Game_Pic.jpg')\r\n    Pic_Dir = Log_Dir + '/Game_Pic.jpg'\r\n    Ocr_Pic = Image.open(Pic_Dir)\r\n    Ocr_Text = pytesseract.image_to_string(Ocr_Pic, lang='jpn')\r\n    return(Ocr_Text)\r\n\r\ndef Remove_Temp_File():\r\n    for root, dirs, files in os.walk(Log_Dir, topdown=False):\r\n        for name in files:\r\n            try:\r\n                os.remove(os.path.join(root, name))\r\n            except:\r\n                continue\r\n\r\ndef Exit_Game():\r\n    print(\"游戏结束，退出游戏\")\r\n    stop_app(Game_Name)\r\n    Remove_Temp_File()\r\n    exit()\r\n\r\ndef Get_Pixel_Rgb(Coordinate):\r\n    snapshot(filename = 'Game_Pic.jpg')\r\n    Pic_Dir = Log_Dir + '/Game_Pic.jpg'\r\n    Img_Pic = Image.open(Pic_Dir)\r\n    r, g, b = Img_Pic.getpixel(Coordinate)\r\n    return (r,g,b)\r\n\r\ndef Pic_Ocr_Shape(x1,y1,x2,y2):\r\n    if x1 < x2:\r\n        xx1 = x1\r\n        xx2 = x2\r\n    else:\r\n        xx1 = x2\r\n        xx2 = x1\r\n    if y1 < y2:\r\n        yy1 = y1\r\n        yy2 = y2\r\n    else:\r\n        yy1 = y2\r\n        yy2 = y1\r\n\r\n    snapshot(filename = 'Game_Pic.jpg')\r\n    Pic_Dir = Log_Dir + '/Game_Pic.jpg'\r\n    Ocr_Pic = cv2.imread(Pic_Dir)\r\n    Ocr_Auto_Pic = Ocr_Pic[yy1:yy2,xx1:xx2]  \r\n    Ocr_Text = pytesseract.image_to_string(Ocr_Auto_Pic, lang='eng')\r\n    return(Ocr_Text)\r\n\r\n#-----------------------------以下为各游戏的不同部分--------------------------------------------\r\n\r\n\r\ndef Check_Game_Mode(Ocr_Text):\r\n    if \"\" in Ocr_Text:\r\n        return \r\n\r\n#----------------------------------主程序部分(不需要更改)--------------------------------------------\r\n        \r\n    \r\nif __name__ == '__main__':\r\n    start_app(Game_Name)\r\n    while True:\r\n        \r\n        Game_Ocr_Text = Pic_Ocr_Unshape()\r\n        try:\r\n            print(Game_Ocr_Text)\r\n        except:\r\n            pass\r\n        Game_Mode = Check_Game_Mode(Game_Ocr_Text)\r\n\r\n#--------------------------------以下部分为主程序中的专属部分-----------------------------\r\n\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ShinyColors/ShinyColors.py b/ShinyColors/ShinyColors.py
+--- a/ShinyColors/ShinyColors.py	(revision bda5f99a632a6724032ce01699303f17eb153402)
++++ b/ShinyColors/ShinyColors.py	(date 1695478629617)
+@@ -1,113 +1,107 @@
+-#----------------------------------引用部分（此部分所有脚本都一样，不需要修改）--------------------------------------------
+ # -*- encoding=utf8 -*-
+-#Version = 2.1
++# Version = 1.0
++# UpdateTime = 2023-09-23
+ 
+-__author__ = "Ray"
++__author__ = "BaG-Ray+"
+ 
+-import os
+-import shutil
++# ----------------------------------引用部分（此部分所有脚本都一样，不需要修改）--------------------------------------------
+ 
+ import cv2
+ import pytesseract
++from PIL import Image
+ from airtest.cli.parser import cli_setup
+ from airtest.core.api import *
+-from PIL import Image
+-
+-if not cli_setup():
+-    auto_setup(__file__, logdir=True, devices=["ios:///http+usbmux://00008020-001318C00A91002E",])
+ 
+-from poco.drivers.ios import iosPoco
+ 
+-poco = iosPoco()
+-
+-#----------------------------------变量部分（需要改）--------------------------------------------
++class OpencvGame:
++    # ----------------------------------变量部分（需要改）--------------------------------------------
+ 
+-#-----以下为基础部分--------
++    # -----以下为基础部分--------
+ 
+-Log_Dir = './ShinyColors/log'
+-Game_Name = "jp.co.bandainamcoent.BNEI0354"
+-Game_Process = 0
++    Log_Dir = '../log'
++    Game_Name = "com.bandainamcoent.shinycolors"
++    Check_Game_Mode_RGB_Coordinate = []
+ 
+-#----以下为图片--------------
++    def __init__(self, Game_Name):
++        self.Game_Name = Game_Name
+ 
+-#----以下为坐标--------------
++        print(os.getcwd())
+ 
+-#----以下为变量--------------
++        if not cli_setup():
++            auto_setup(__file__, logdir=True,
++                       devices=[
++                           "android://127.0.0.1:5037/aqwkhy95by4tgikb?cap_method=MINICAP&touch_method=MAXTOUCH&", ])
+ 
++        start_app(self.Game_Name)
+ 
+-#----------------------------------基础程序部分（此部分所有游戏一致，不需要更改）--------------------------------------------
++    # ----------------------------------基础程序部分（此部分所有游戏一致，不需要更改）--------------------------------------------
+ 
+-#未裁剪的图片，也就是还没有打开过的图片就用这个来读取ocr,此时读取的应该是全地址。更改为判断游戏状态相关
+-def Pic_Ocr_Unshape():
+-    snapshot(filename = 'Game_Pic.jpg')
+-    Pic_Dir = Log_Dir + '/Game_Pic.jpg'
+-    Ocr_Pic = Image.open(Pic_Dir)
+-    Ocr_Text = pytesseract.image_to_string(Ocr_Pic, lang='jpn')
+-    return(Ocr_Text)
++    # 未裁剪的图片，也就是还没有打开过的图片就用这个来读取ocr,此时读取的应该是全地址。更改为判断游戏状态相关
++    def Pic_Ocr_Unshape(self):
++        snapshot(filename='Game_Pic.jpg')
++        Pic_Dir = self.Log_Dir + '/Game_Pic.jpg'
++        Ocr_Pic = Image.open(Pic_Dir)
++        Ocr_Text = pytesseract.image_to_string(Ocr_Pic, lang='jpn')
++        return Ocr_Text
+ 
+-def Remove_Temp_File():
+-    for root, dirs, files in os.walk(Log_Dir, topdown=False):
+-        for name in files:
+-            try:
+-                os.remove(os.path.join(root, name))
+-            except:
+-                continue
++    def Remove_Temp_File(self):
++        for root, dirs, files in os.walk(self.Log_Dir, topdown=False):
++            for name in files:
++                try:
++                    os.remove(os.path.join(root, name))
++                except:
++                    continue
+ 
+-def Exit_Game():
+-    print("游戏结束，退出游戏")
+-    stop_app(Game_Name)
+-    Remove_Temp_File()
+-    exit()
++    def Exit_Game(self):
++        print("游戏结束，退出游戏")
++        stop_app(self.Game_Name)
++        self.Remove_Temp_File()
++        exit()
+ 
+-def Get_Pixel_Rgb(Coordinate):
+-    snapshot(filename = 'Game_Pic.jpg')
+-    Pic_Dir = Log_Dir + '/Game_Pic.jpg'
+-    Img_Pic = Image.open(Pic_Dir)
+-    r, g, b = Img_Pic.getpixel(Coordinate)
+-    return (r,g,b)
++    def Get_Pixel_Rgb(self, Coordinate):
++        snapshot(filename='Game_Pic.jpg')
++        Pic_Dir = self.Log_Dir + '/Game_Pic.jpg'
++        Img_Pic = Image.open(Pic_Dir)
++        r, g, b = Img_Pic.getpixel(Coordinate)
++        return r, g, b
+ 
+-def Pic_Ocr_Shape(x1,y1,x2,y2):
+-    if x1 < x2:
+-        xx1 = x1
+-        xx2 = x2
+-    else:
+-        xx1 = x2
+-        xx2 = x1
+-    if y1 < y2:
+-        yy1 = y1
+-        yy2 = y2
+-    else:
+-        yy1 = y2
+-        yy2 = y1
++    def Pic_Ocr_Shape(self, x1, y1, x2, y2):
++
++        xx1 = min(x1, x2)
++        xx2 = max(x1, x2)
++        yy1 = min(y1, y2)
++        yy2 = max(y1, y2)
+ 
+-    snapshot(filename = 'Game_Pic.jpg')
+-    Pic_Dir = Log_Dir + '/Game_Pic.jpg'
+-    Ocr_Pic = cv2.imread(Pic_Dir)
+-    Ocr_Auto_Pic = Ocr_Pic[yy1:yy2,xx1:xx2]  
+-    Ocr_Text = pytesseract.image_to_string(Ocr_Auto_Pic, lang='eng')
+-    return(Ocr_Text)
++        snapshot(filename='Game_Pic.jpg')
++        Pic_Dir = self.Log_Dir + '/Game_Pic.jpg'
++        Ocr_Pic = cv2.imread(Pic_Dir)
++        Ocr_Auto_Pic = Ocr_Pic[yy1:yy2, xx1:xx2]
++        Ocr_Text = pytesseract.image_to_string(Ocr_Auto_Pic, lang='eng')
++        return Ocr_Text
++
++    def CV2_Show_Pic(self, Pic_Data):
++        cv2.namedWindow("image")  # 创建一个image的窗口
++        cv2.imshow("image", Pic_Data)  # 显示图像
++        cv2.waitKey()  # 默认为0，无限等待
++
++    def CV2_Circle_Pic(self, Pic_Dir, Coordinate):
++        # 此函数用于在截图上显示点
++        Cv2_Img = cv2.imread(Pic_Dir)
++        Cv2_Circle = cv2.circle(Cv2_Img, Coordinate, 5, (255, 0, 255), -1)
++        CV2_Circle_Resize = cv2.resize(Cv2_Circle, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_LINEAR)
++        self.CV2_Show_Pic(CV2_Circle_Resize)
+ 
+-#-----------------------------以下为各游戏的不同部分--------------------------------------------
++    # -----------------------------以下为各游戏的不同部分--------------------------------------------
+ 
+ 
+-def Check_Game_Mode(Ocr_Text):
+-    if "" in Ocr_Text:
+-        return 
++'''
++    def Check_Game_Mode(self, Ocr_Text):
++        if "" in Ocr_Text:
++            return
+ 
+-#----------------------------------主程序部分(不需要更改)--------------------------------------------
+-        
+-    
+-if __name__ == '__main__':
+-    start_app(Game_Name)
+-    while True:
+-        
+-        Game_Ocr_Text = Pic_Ocr_Unshape()
+-        try:
+-            print(Game_Ocr_Text)
+-        except:
+-            pass
+-        Game_Mode = Check_Game_Mode(Game_Ocr_Text)
++        # ----------------------------------主程序部分(不需要更改)--------------------------------------------
+ 
+-#--------------------------------以下部分为主程序中的专属部分-----------------------------
++    Game_Mode = self.Check_Game_Mode(Game_Ocr_Text)
++    # --------------------------------以下部分为主程序中的专属部分-----------------------------
+ 
+-
++'''
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ProjectRootManager\" version=\"2\" project-jdk-name=\"Python 3.8\" project-jdk-type=\"Python SDK\" />\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+--- a/.idea/misc.xml	(revision bda5f99a632a6724032ce01699303f17eb153402)
++++ b/.idea/misc.xml	(date 1695477849453)
+@@ -1,4 +1,4 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.8" project-jdk-type="Python SDK" />
++  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.9 (OpenCV_Gamers)" project-jdk-type="Python SDK" />
+ </project>
+\ No newline at end of file
+Index: .idea/OpenCV_Gamers.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<module type=\"PYTHON_MODULE\" version=\"4\">\r\n  <component name=\"NewModuleRootManager\">\r\n    <content url=\"file://$MODULE_DIR$\" />\r\n    <orderEntry type=\"inheritedJdk\" />\r\n    <orderEntry type=\"sourceFolder\" forTests=\"false\" />\r\n  </component>\r\n</module>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/OpenCV_Gamers.iml b/.idea/OpenCV_Gamers.iml
+--- a/.idea/OpenCV_Gamers.iml	(revision bda5f99a632a6724032ce01699303f17eb153402)
++++ b/.idea/OpenCV_Gamers.iml	(date 1695477849442)
+@@ -1,8 +1,10 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <module type="PYTHON_MODULE" version="4">
+   <component name="NewModuleRootManager">
+-    <content url="file://$MODULE_DIR$" />
+-    <orderEntry type="inheritedJdk" />
++    <content url="file://$MODULE_DIR$">
++      <excludeFolder url="file://$MODULE_DIR$/venv" />
++    </content>
++    <orderEntry type="jdk" jdkName="Python 3.9 (OpenCV_Gamers)" jdkType="Python SDK" />
+     <orderEntry type="sourceFolder" forTests="false" />
+   </component>
+ </module>
+\ No newline at end of file
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"f2dd40d9-5f0a-4efc-870d-33f93e601e19\" name=\"更改\" comment=\"\">\r\n      <changelist_data name=\"BaG-Ray+\" email=\"\" />\r\n      <change afterPath=\"$PROJECT_DIR$/Default_Games_Script.py\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/Default_Scripts.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Default_Scripts.py\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/LegenClover/LegenClover.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/LegenClover/LegenClover.py\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Python Script\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <branch-grouping />\r\n    <option name=\"PREVIOUS_COMMIT_AUTHORS\">\r\n      <list>\r\n        <option value=\"BaG-Ray+\" />\r\n      </list>\r\n    </option>\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n    <option name=\"UPDATE_TYPE\" value=\"REBASE\" />\r\n  </component>\r\n  <component name=\"HighlightingSettingsPerFile\">\r\n    <setting file=\"file://$PROJECT_DIR$/Default_Scripts.py\" root0=\"FORCE_HIGHLIGHTING\" />\r\n  </component>\r\n  <component name=\"ProjectId\" id=\"2STVFZ40oSsmVOo52aLu78jh2OK\" />\r\n  <component name=\"ProjectLevelVcsManager\" settingsEditedManually=\"true\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\"><![CDATA[{\r\n  \"keyToString\": {\r\n    \"ASKED_SHARE_PROJECT_CONFIGURATION_FILES\": \"true\",\r\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\r\n    \"SHARE_PROJECT_CONFIGURATION_FILES\": \"true\",\r\n    \"dart.analysis.tool.window.visible\": \"false\",\r\n    \"git-widget-placeholder\": \"master\",\r\n    \"last_opened_file_path\": \"P:/Airtest/OpenCV_Gamers\",\r\n    \"settings.editor.selected.configurable\": \"advanced.settings\"\r\n  }\r\n}]]></component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"应用程序级\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"SvnConfiguration\">\r\n    <configuration>C:\\Users\\Ray\\AppData\\Roaming\\Subversion</configuration>\r\n  </component>\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"默认任务\">\r\n      <changelist id=\"f2dd40d9-5f0a-4efc-870d-33f93e601e19\" name=\"更改\" comment=\"\" />\r\n      <created>1689170454360</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1689170454360</updated>\r\n    </task>\r\n    <servers />\r\n  </component>\r\n  <component name=\"UpdateCopyrightCheckinHandler\">\r\n    <option name=\"UPDATE_COPYRIGHT\" value=\"true\" />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State>\r\n              <option name=\"CUSTOM_BOOLEAN_PROPERTIES\">\r\n                <map>\r\n                  <entry key=\"Show.Git.Branches\" value=\"true\" />\r\n                </map>\r\n              </option>\r\n              <option name=\"FILTERS\">\r\n                <map>\r\n                  <entry key=\"branch\">\r\n                    <value>\r\n                      <list>\r\n                        <option value=\"github/master\" />\r\n                      </list>\r\n                    </value>\r\n                  </entry>\r\n                </map>\r\n              </option>\r\n            </State>\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <option name=\"CHECK_NEW_TODO\" value=\"false\" />\r\n    <option name=\"OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT\" value=\"true\" />\r\n    <option name=\"REFORMAT_BEFORE_PROJECT_COMMIT\" value=\"true\" />\r\n    <option name=\"REARRANGE_BEFORE_PROJECT_COMMIT\" value=\"true\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision bda5f99a632a6724032ce01699303f17eb153402)
++++ b/.idea/workspace.xml	(date 1695478556373)
+@@ -6,10 +6,10 @@
+   <component name="ChangeListManager">
+     <list default="true" id="f2dd40d9-5f0a-4efc-870d-33f93e601e19" name="更改" comment="">
+       <changelist_data name="BaG-Ray+" email="" />
+-      <change afterPath="$PROJECT_DIR$/Default_Games_Script.py" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/OpenCV_Gamers.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/OpenCV_Gamers.iml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Default_Scripts.py" beforeDir="false" afterPath="$PROJECT_DIR$/Default_Scripts.py" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/LegenClover/LegenClover.py" beforeDir="false" afterPath="$PROJECT_DIR$/LegenClover/LegenClover.py" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/ShinyColors/ShinyColors.py" beforeDir="false" afterPath="$PROJECT_DIR$/ShinyColors/ShinyColors.py" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -33,6 +33,9 @@
+     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+     <option name="UPDATE_TYPE" value="REBASE" />
+   </component>
++  <component name="GitToolBoxStore">
++    <option name="projectConfigVersion" value="5" />
++  </component>
+   <component name="HighlightingSettingsPerFile">
+     <setting file="file://$PROJECT_DIR$/Default_Scripts.py" root0="FORCE_HIGHLIGHTING" />
+   </component>
+@@ -50,7 +53,7 @@
+     "dart.analysis.tool.window.visible": "false",
+     "git-widget-placeholder": "master",
+     "last_opened_file_path": "P:/Airtest/OpenCV_Gamers",
+-    "settings.editor.selected.configurable": "advanced.settings"
++    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+   }
+ }]]></component>
+   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
