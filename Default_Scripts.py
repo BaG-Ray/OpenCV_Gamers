@@ -1,6 +1,6 @@
 # -*- encoding=utf8 -*-
-# Version = 3.3
-# UpdateTime = 2023-07-21
+# Version = 3.4
+# UpdateTime = 2023-09-23
 
 # ----------------------------------2.4更新---------------------------------------------------
 # UpdateTime = 2023-05-18
@@ -23,6 +23,10 @@
 # ----------------------------------3.3更新---------------------------------------------------
 # UpdateTime = 2023-07-21
 # 将图片质量拉到最大，试下能否解决每次RGB值都在变化的问题
+
+# ----------------------------------3.4更新---------------------------------------------------
+# UpdateTime = 2023-09-23
+# 将数字OCR添加了通过坐标的方式
 
 __author__ = "BaG-Ray+"
 
@@ -91,6 +95,25 @@ class OpencvGame:
         return r, g, b
 
     def Pic_Ocr_Shape(self, x1, y1, x2, y2):
+
+        xx1 = min(x1, x2)
+        xx2 = max(x1, x2)
+        yy1 = min(y1, y2)
+        yy2 = max(y1, y2)
+
+        Ocr_Pic = self.Snap_Read_Pic()
+        Ocr_Auto_Pic = Ocr_Pic[yy1:yy2, xx1:xx2]
+        self.CV2_Show_Pic(Ocr_Auto_Pic)
+        Ocr_Text = pytesseract.image_to_string(Ocr_Auto_Pic, lang='eng',
+                                               config='--psm 7 --oem 3 -c tessedit_char_whitelist=0123456789/')
+        return Ocr_Text
+
+    def Pic_Ocr_Shape_Coordinate(self, Coordinate1, Coordinate2):
+
+        x1 = Coordinate1[0]
+        y1 = Coordinate1[1]
+        x2 = Coordinate2[0]
+        y2 = Coordinate2[1]
 
         xx1 = min(x1, x2)
         xx2 = max(x1, x2)

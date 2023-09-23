@@ -63,5 +63,4 @@ def Home_Page(Game_Process):
         pass
 
 
-print(ShinyColors_Scripts_Class.Pic_Ocr_Shape_Coordinate(ShinyColors_Coordinate.OCR_Coordinate_SP_1,
-                                                         ShinyColors_Coordinate.OCR_Coordinate_SP_2))
+Home_Page(0)

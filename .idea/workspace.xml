@@ -4,19 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f2dd40d9-5f0a-4efc-870d-33f93e601e19" name="更改" comment="测试">
-      <change afterPath="$PROJECT_DIR$/LegenClover/LegenClover_Class.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/LegenClover_Default_Script.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/LegenClover_HomePage.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/LegenClover_Quest.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/LegenClover_Quest_Main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/LegenClover_Quest_Sub.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/LegenClover_Quest_Tower.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LegenClover/LegenClover_Story_Get_Diamond.py" afterDir="false" />
+    <list default="true" id="f2dd40d9-5f0a-4efc-870d-33f93e601e19" name="更改" comment="">
+      <change afterPath="$PROJECT_DIR$/ShinyColors/ShinyColors_Class.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ShinyColors/ShinyColors_Default_Script.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/OpenCV_Gamers.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/OpenCV_Gamers.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Default_Scripts.py" beforeDir="false" afterPath="$PROJECT_DIR$/Default_Scripts.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LegenClover/LegenClover.py" beforeDir="false" afterPath="$PROJECT_DIR$/LegenClover/LegenClover.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LegenClover/LegenClover_Story.py" beforeDir="false" afterPath="$PROJECT_DIR$/LegenClover/LegenClover_Story.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ShinyColors/ShinyColors.py" beforeDir="false" afterPath="$PROJECT_DIR$/ShinyColors/ShinyColors.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -67,7 +62,7 @@
     &quot;settings.editor.selected.configurable&quot;: &quot;org.jetbrains.plugins.github.ui.GithubSettingsConfigurable&quot;
   }
 }</component>
-  <component name="RunManager" selected="Python.LegenClover">
+  <component name="RunManager">
     <configuration name="LegenClover" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="OpenCV_Gamers" />
       <option name="INTERPRETER_OPTIONS" value="" />
