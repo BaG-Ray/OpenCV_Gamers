@@ -40,12 +40,10 @@ ShinyColors_RGB = ShinyColors_Class.Variable_RGB()
 
 # ----------------------------------以下为标准程序部分--------------------------------------------
 def Check_Game_Mode(Ocr_Text, Game_Process, Game_Mode_RGB):
+    pass
 
 
-# if ShinyColors_Scripts_Class.RGB_Compare(Game_Mode_RGB, RGB_Page_Coordinate_Skill):
-
-
-def xxx_Page(Game_Process):
+def Skill_Page(Game_Process):
     Skill_List_Num = 0
 
     while True:
@@ -56,17 +54,17 @@ def xxx_Page(Game_Process):
         except:
             pass
 
-            # Game_Mode_RGB = ShinyColors_Scripts_Class.Get_Pixel_Rgb(Coordinate_Page_Coordinate_Skill)
-            # print(Game_Mode_RGB)
+        Game_Mode_RGB = ShinyColors_Scripts_Class.Get_Pixel_Rgb(0)
+        print(Game_Mode_RGB)
 
-            # Game_Mode = Check_Game_Mode(Game_Ocr_Text, Game_Process, Game_Mode_RGB)
-            # print(Game_Mode)
+        Game_Mode = Check_Game_Mode(Game_Ocr_Text, Game_Process, Game_Mode_RGB)
+        print(Game_Mode)
 
-            # if Game_Mode == 0:
-            continue
+        if Game_Mode == 0:
+            pass
 
 
 # ----------------------------------以下为主程序部分--------------------------------------------
 
 # ----------------------------------test-------------------------------------------
-xxx_Page(0)
+Skill_Page(0)

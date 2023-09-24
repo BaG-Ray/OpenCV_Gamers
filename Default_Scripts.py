@@ -1,6 +1,6 @@
 # -*- encoding=utf8 -*-
-# Version = 3.4
-# UpdateTime = 2023-09-23
+# Version = 3.5
+# UpdateTime = 2023-09-24
 
 # ----------------------------------2.4更新---------------------------------------------------
 # UpdateTime = 2023-05-18
@@ -28,6 +28,11 @@
 # UpdateTime = 2023-09-23
 # 将数字OCR添加了通过坐标的方式
 
+# ----------------------------------3.5更新---------------------------------------------------
+# UpdateTime = 2023-09-23
+# OCR添加了ABCD的识别方式
+# 添加了SSIM比较图片的方法
+
 __author__ = "BaG-Ray+"
 
 # ----------------------------------引用部分（此部分所有脚本都一样，不需要修改）--------------------------------------------
@@ -36,6 +41,7 @@ import cv2
 import pytesseract
 from airtest.cli.parser import cli_setup
 from airtest.core.api import *
+from skimage.metrics import structural_similarity as compare_ssim
 
 
 class OpencvGame:
@@ -127,6 +133,25 @@ class OpencvGame:
                                                config='--psm 7 --oem 3 -c tessedit_char_whitelist=0123456789/')
         return Ocr_Text
 
+    def Pic_Ocr_Shape_Rank_Coordinate(self, Coordinate1, Coordinate2):
+
+        x1 = Coordinate1[0]
+        y1 = Coordinate1[1]
+        x2 = Coordinate2[0]
+        y2 = Coordinate2[1]
+
+        xx1 = min(x1, x2)
+        xx2 = max(x1, x2)
+        yy1 = min(y1, y2)
+        yy2 = max(y1, y2)
+
+        Ocr_Pic = self.Snap_Read_Pic()
+        Ocr_Auto_Pic = Ocr_Pic[yy1:yy2, xx1:xx2]
+        self.CV2_Show_Pic(Ocr_Auto_Pic)
+        Ocr_Text = pytesseract.image_to_string(Ocr_Auto_Pic, lang='eng',
+                                               config='--psm 7 --oem 3 -c tessedit_char_whitelist=ABCD')
+        return Ocr_Text
+
     def CV2_Show_Pic(self, Pic_Data):
         cv2.imshow("image", Pic_Data)  # 显示图像
         cv2.waitKey(0)
@@ -137,5 +162,21 @@ class OpencvGame:
         Cv2_Circle = cv2.circle(Cv2_Img, Coordinate, 5, (255, 0, 255), -1)
         CV2_Circle_Resize = cv2.resize(Cv2_Circle, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_LINEAR)
         self.CV2_Show_Pic(CV2_Circle_Resize)
+
+    def RGB_Compare(self, RGB, RGB_Ref):
+        if (RGB[0] <= RGB_Ref[0] + 10) and (RGB[0] >= RGB_Ref[0] - 10):
+            if (RGB[1] <= RGB_Ref[1] + 10) and (RGB[1] >= RGB_Ref[1] - 10):
+                if (RGB[2] <= RGB_Ref[2] + 10) and (RGB[2] >= RGB_Ref[2] - 10):
+                    return 1
+
+        else:
+            return 0
+
+    def Pic_Compare(self, Pic, Pic_Ref):
+        s = compare_ssim(Pic, Pic_Ref)
+        if s > 0.5:
+            return 1
+        else:
+            return 0
 
     # -----------------------------以下为各游戏的不同部分--------------------------------------------
