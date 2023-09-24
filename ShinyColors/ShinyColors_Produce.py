@@ -16,6 +16,27 @@ import ShinyColors_Class
 
 # ------------------------------------以下为图片----------------------------------------------
 
+class Pic:
+    Num1 = 1
+    Num2 = 2
+    Num3 = 3
+    Num4 = 0
+    Num5 = 0
+    Num6 = 6
+    Num7 = 7
+    Num8 = 8
+
+
+Num_Pic_List = [Pic.Num1,
+                Pic.Num2,
+                Pic.Num3,
+                Pic.Num4,
+                Pic.Num5,
+                Pic.Num6,
+                Pic.Num7,
+                Pic.Num8]
+
+
 # -------------------------------------以下为坐标-----------------------------------------------
 class Coordinate:
     OCR_Season_1 = (864, 40)
@@ -44,6 +65,9 @@ class Coordinate:
     Button_OK = (1988, 947)
 
     RGB_Support = (1642, 950)
+
+    PicCom_Week_1 = ()
+    PicCom_Week_2 = ()
 
 
 # --------------------------------------以下为变量--------------------------------------------
@@ -105,9 +129,12 @@ def Get_Rank():
 
 
 def Get_Week():
-    Week = ShinyColors_Scripts_Class.Pic_Ocr_Shape_Coordinate((965, 35),
-                                                              (1061, 127))
-    return int(Week)
+    for Num in range(0, 7):
+        if ShinyColors_Scripts_Class.Pic_Compare_Coordinate(Coordinate.PicCom_Week_1, Coordinate.PicCom_Week_2,
+                                                            Num_Pic_List[Num]):
+            return Num + 1
+        else:
+            return 999
 
 
 # ----------------------------------以下为标准程序部分--------------------------------------------

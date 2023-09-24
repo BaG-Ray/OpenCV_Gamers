@@ -179,4 +179,23 @@ class OpencvGame:
         else:
             return 0
 
+    def Pic_Compare_Coordinate(self, Coordinate1, Coordinate2, Pic_Ref):
+        x1 = Coordinate1[0]
+        y1 = Coordinate1[1]
+        x2 = Coordinate2[0]
+        y2 = Coordinate2[1]
+
+        xx1 = min(x1, x2)
+        xx2 = max(x1, x2)
+        yy1 = min(y1, y2)
+        yy2 = max(y1, y2)
+
+        Ocr_Pic = self.Snap_Read_Pic()
+        Ocr_Auto_Pic = Ocr_Pic[yy1:yy2, xx1:xx2]
+
+        if self.Pic_Compare(Ocr_Auto_Pic, Pic_Ref):
+            return 1
+        else:
+            return 0
+
     # -----------------------------以下为各游戏的不同部分--------------------------------------------
